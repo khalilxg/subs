@@ -1,26 +1,30 @@
-# Use an official Node.js image
 FROM node:20-alpine
 
-# Set working directory inside container
 WORKDIR /app
+
+# Ensure .bin exists
+RUN mkdir -p /app/node_modules/.bin
 
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# Copy package.json and pnpm-lock.yaml first for caching
+# Copy lockfile and package.json first for caching
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install dependencies (with hoist for supabase)
+RUN pnpm install --frozen-lockfile --shamefully-hoist
 
-# Copy the rest of the project files
+# Copy the rest of the project
 COPY . .
+
+# Copy environment variables (if you have .env)
+COPY .env .env
 
 # Build the project
 RUN pnpm run build
 
-# Expose the port your app runs on (adjust if needed)
+# Expose app port
 EXPOSE 3000
 
-# Start the app (adjust if your script is different)
+# Run app
 CMD ["pnpm", "start"]
