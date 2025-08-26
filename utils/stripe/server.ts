@@ -9,17 +9,12 @@ import {
   getErrorRedirect,
   calculateTrialEndUnixTimestamp
 } from '@/utils/helpers';
-import { Tables } from '@/types_db';
-
-type Price = Tables<'prices'>;
-
 type CheckoutResponse = {
   errorRedirect?: string;
   sessionId?: string;
 };
 
 export async function checkoutWithStripe(
-  price: Price,
   redirectPath: string = '/account'
 ): Promise<CheckoutResponse> {
   try {
@@ -56,7 +51,6 @@ export async function checkoutWithStripe(
       },
       line_items: [
         {
-          price: price.id,
           quantity: 1
         }
       ],
@@ -66,22 +60,7 @@ export async function checkoutWithStripe(
 
     console.log(
       'Trial end:',
-      calculateTrialEndUnixTimestamp(price.trial_period_days)
     );
-    if (price.type === 'recurring') {
-      params = {
-        ...params,
-        mode: 'subscription',
-        subscription_data: {
-          trial_end: calculateTrialEndUnixTimestamp(price.trial_period_days)
-        }
-      };
-    } else if (price.type === 'one_time') {
-      params = {
-        ...params,
-        mode: 'payment'
-      };
-    }
 
     // Create a checkout session in Stripe
     let session;
