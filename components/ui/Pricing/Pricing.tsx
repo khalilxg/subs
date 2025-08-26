@@ -141,15 +141,30 @@ export default function Pricing() {
               <input
                 type="tel"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Remove all non-numerical characters
+                  const numericValue = value.replace(/\D/g, '');
+                  // Only update the state if the new value is 8 digits or less
+                  if (numericValue.length <= 8) {
+                    setPhoneNumber(numericValue);
+                  }
+                }}
                 placeholder="أدخل رقم الهاتف"
                 className="w-full px-4 py-2 text-white bg-zinc-800 border border-zinc-700 rounded-md text-center placeholder:text-center focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
+
+              {phoneNumber.length > 0 && phoneNumber.length !== 8 && (
+                <p className="text-red-400 text-sm text-center mt-2">
+                  أدخل رقمك الحقيقي المكون من 8 أرقام
+                </p>
+              )}
 
               <Button
                 variant="slim"
                 onClick={handlePhoneSubmit}
                 loading={isSending}
+                disabled={phoneNumber.length !== 8 || isSending}
                 className="w-full"
               >
                 {isSending ? 'جاري المعالجة، يرجى الانتظار...' : 'توليد الرابط'}
