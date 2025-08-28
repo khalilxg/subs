@@ -18,13 +18,13 @@ export default function Pricing() {
   const WORKSPACE = 'loi';
   const DEFAULT_PASS = '12345678';
 
-  const handlePhoneSubmit = async () => {
+const handlePhoneSubmit = async () => {
     if (!phoneNumber) return;
 
     setIsSending(true);
 
     try {
-      // 1. Create user
+      // 1. Attempt to create user
       const createResp = await fetch(`${API_URL}/admin/users/new`, {
         method: 'POST',
         headers: {
@@ -39,6 +39,14 @@ export default function Pricing() {
       });
 
       const createData = await createResp.json();
+      
+      // Check for the specific 'Unique constraint failed' error
+      if (createData.error && createData.error.includes('Unique constraint failed')) {
+        // User already exists, redirect directly to the workspace link
+        window.location.href = 'https://loi.morched.tn/workspace/loi';
+        return; // Exit the function
+      }
+      
       const userId = createData?.user?.id;
 
       if (!userId) {
@@ -47,7 +55,7 @@ export default function Pricing() {
         return;
       }
 
-      // 2. Add user to workspace
+      // 2. Add user to workspace (this part remains the same)
       const workspaceResp = await fetch(`${API_URL}/admin/workspaces/${WORKSPACE}/manage-users`, {
         method: 'POST',
         headers: {
@@ -67,7 +75,7 @@ export default function Pricing() {
         return;
       }
 
-      // 3. Generate SSO token and auto-redirect
+      // 3. Generate SSO token and auto-redirect (this part remains the same)
       const tokenResp = await fetch(`${API_URL}/users/${userId}/issue-auth-token`, {
         method: 'GET',
         headers: {
@@ -84,8 +92,6 @@ export default function Pricing() {
         return;
       }
 
-      // Auto-redirect
-      // Auto-redirect with workspace
       const ssoLink = `http://loi.morched.tn/sso/simple?token=${token}&redirectTo=/workspace/loi`;
       window.location.href = ssoLink;
 
