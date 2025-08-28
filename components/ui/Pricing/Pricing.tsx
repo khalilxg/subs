@@ -122,7 +122,7 @@ export default function Pricing() {
                     : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
                 } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
               >
-                أفراد
+                 مواطنين أفراد
               </button>
               <button
                 onClick={() => setActivePlan('lawyers')}
@@ -133,7 +133,7 @@ export default function Pricing() {
                     : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
                 } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
               >
-                محامون وشركات
+                محامون أو شركات
               </button>
             </div>
 
