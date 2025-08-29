@@ -12,19 +12,19 @@ export default function Pricing() {
   const [activePlan, setActivePlan] = useState<Plan>('individuals');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [showRedirecting, setShowRedirecting] = useState<boolean>(false);
 
   const API_URL = 'https://loi.morched.tn/api/v1';
   const API_KEY = 'H19FC10-KYP4KA3-G5A8S5E-NJB9S37';
   const WORKSPACE = 'loi';
   const DEFAULT_PASS = '12345678';
 
-const handlePhoneSubmit = async () => {
+  const handlePhoneSubmit = async () => {
     if (!phoneNumber) return;
 
     setIsSending(true);
 
     try {
-      // 1. Attempt to create user
       const createResp = await fetch(`${API_URL}/admin/users/new`, {
         method: 'POST',
         headers: {
@@ -39,74 +39,94 @@ const handlePhoneSubmit = async () => {
       });
 
       const createData = await createResp.json();
-      
-      // Check for the specific 'Unique constraint failed' error
+      let redirectUrl = null;
+
       if (createData.error && createData.error.includes('Unique constraint failed')) {
-        // User already exists, redirect directly to the workspace link
-        window.location.href = 'https://loi.morched.tn/workspace/loi';
-        return; // Exit the function
+        redirectUrl = 'https://loi.morched.tn/workspace/loi';
+      } else {
+        const userId = createData?.user?.id;
+        if (!userId) {
+          console.error('Failed to create user', createData);
+          alert('Failed to create user. Check console.');
+          setIsSending(false);
+          return;
+        }
+
+        const workspaceResp = await fetch(`${API_URL}/admin/workspaces/${WORKSPACE}/manage-users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`,
+          },
+          body: JSON.stringify({
+            userIds: [userId],
+            reset: false,
+          }),
+        });
+
+        const workspaceData = await workspaceResp.json();
+        if (!workspaceData.success) {
+          console.error('Failed to add user to workspace', workspaceData);
+          alert('Failed to add user to workspace. Check console.');
+          setIsSending(false);
+          return;
+        }
+
+        const tokenResp = await fetch(`${API_URL}/users/${userId}/issue-auth-token`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+          },
+        });
+
+        const tokenData = await tokenResp.json();
+        const token = tokenData?.token;
+        if (!token) {
+          console.error('Failed to get auth token', tokenData);
+          alert('Failed to generate auth token. Check console.');
+          setIsSending(false);
+          return;
+        }
+        redirectUrl = `http://loi.morched.tn/sso/simple?token=${token}&redirectTo=/workspace/loi`;
       }
       
-      const userId = createData?.user?.id;
-
-      if (!userId) {
-        console.error('Failed to create user', createData);
-        alert('Failed to create user. Check console.');
-        return;
-      }
-
-      // 2. Add user to workspace (this part remains the same)
-      const workspaceResp = await fetch(`${API_URL}/admin/workspaces/${WORKSPACE}/manage-users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
-        },
-        body: JSON.stringify({
-          userIds: [userId],
-          reset: false,
-        }),
-      });
-
-      const workspaceData = await workspaceResp.json();
-      if (!workspaceData.success) {
-        console.error('Failed to add user to workspace', workspaceData);
-        alert('Failed to add user to workspace. Check console.');
-        return;
-      }
-
-      // 3. Generate SSO token and auto-redirect (this part remains the same)
-      const tokenResp = await fetch(`${API_URL}/users/${userId}/issue-auth-token`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-        },
-      });
-
-      const tokenData = await tokenResp.json();
-      const token = tokenData?.token;
-
-      if (!token) {
-        console.error('Failed to get auth token', tokenData);
-        alert('Failed to generate auth token. Check console.');
-        return;
-      }
-
-      const ssoLink = `http://loi.morched.tn/sso/simple?token=${token}&redirectTo=/workspace/loi`;
-      window.location.href = ssoLink;
-
+      setIsSending(false);
+      setShowRedirecting(true);
+      
+      // The reliable 10-second delay before redirecting.
+      setTimeout(() => {
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        }
+      }, 10000); // 10 seconds
 
     } catch (err) {
       console.error(err);
       alert('An error occurred. Check console.');
-    } finally {
       setIsSending(false);
     }
   };
 
-    return (
+  return (
     <section className="bg-black">
-      <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
+      {/* Full-screen, semi-transparent overlay with GIF */}
+      {showRedirecting && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white bg-opacity-75 backdrop-blur-sm">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <img
+              src="/morched.gif"
+              alt="Redirecting animation"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <p className="mt-4 text-black text-lg absolute bottom-10">
+            {'جاري المعالجة، يرجى الانتظار...'}
+          </p>
+        </div>
+      )}
+
+      {/* Main content, hidden when redirecting */}
+      <div className={`${showRedirecting ? 'hidden' : ''} max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8`}>
         <div className="sm:flex sm:flex-col sm:align-center text-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-6xl">
             خطط الاستخدام
@@ -128,7 +148,7 @@ const handlePhoneSubmit = async () => {
                     : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
                 } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
               >
-                 مواطنين أفراد
+                أفراد
               </button>
               <button
                 onClick={() => setActivePlan('lawyers')}
@@ -139,7 +159,7 @@ const handlePhoneSubmit = async () => {
                     : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
                 } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
               >
-                محامون أو شركات
+                شركات
               </button>
             </div>
 
@@ -149,9 +169,7 @@ const handlePhoneSubmit = async () => {
                 value={phoneNumber}
                 onChange={(e) => {
                   const value = e.target.value;
-                  // Remove all non-numerical characters
                   const numericValue = value.replace(/\D/g, '');
-                  // Only update the state if the new value is 8 digits or less
                   if (numericValue.length <= 8) {
                     setPhoneNumber(numericValue);
                   }
@@ -214,7 +232,6 @@ const handlePhoneSubmit = async () => {
                   ستتلقى رابطًا عبر رسالة نصية يمنحك وصولًا مجانيًا لمدة 30 يومًا.
                 </p>
               </div>
-
             </>
           )}
 
@@ -284,7 +301,6 @@ const handlePhoneSubmit = async () => {
             </>
           )}
         </div>
-
         <LogoCloud />
       </div>
     </section>
