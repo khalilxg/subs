@@ -109,7 +109,7 @@ export default function Pricing() {
 
               {generatedUsername && (
                 <a
-                  href={`sms:25494040?body= ${generatedUsername}`}
+                  href={`sms:25484040?body= ${generatedUsername}`}
                   className="mt-4 block p-4 bg-zinc-800 rounded-md text-center hover:bg-zinc-700 transition cursor-pointer"
                 >
                   <p className="text-sm text-zinc-300">
@@ -119,7 +119,7 @@ export default function Pricing() {
                     {generatedUsername}
                   </p>
                   <p dir="rtl" className="text-sm text-zinc-400 text-center mt-1">
-                    اضغط هنا لإرسال هذا الكود مباشرة إلى المرشد 📲 25494040
+                    اضغط هنا لإرسال هذا الكود مباشرة إلى المرشد 📲 25484040
                   </p>
                 </a>
               )}
@@ -149,7 +149,7 @@ export default function Pricing() {
                 </ul>
               </div>
               <p dir="rtl" className="mt-8 text-sm text-zinc-400 text-center">
-                اضغط على <strong>توليد اسم مستخدم</strong>، ثم أرسل الكود الناتج إلى الرقم <strong><bdi dir="ltr">📲 25494040</bdi></strong>
+                اضغط على <strong>توليد اسم مستخدم</strong>، ثم أرسل الكود الناتج إلى الرقم <strong><bdi dir="ltr">📲 25484040</bdi></strong>
               </p>
             </div>
           )}
