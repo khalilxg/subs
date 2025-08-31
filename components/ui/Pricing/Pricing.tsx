@@ -109,7 +109,7 @@ export default function Pricing() {
 
               {generatedUsername && (
                 <a
-                  href={`sms:21625494040?body=اسم المستخدم الجديد الخاص بي هو: ${generatedUsername}`}
+                  href={`sms:25494040?body= ${generatedUsername}`}
                   className="mt-4 block p-4 bg-zinc-800 rounded-md text-center hover:bg-zinc-700 transition cursor-pointer"
                 >
                   <p className="text-sm text-zinc-300">
