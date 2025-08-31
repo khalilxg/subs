@@ -64,32 +64,32 @@ export default function Pricing() {
             مرشد هي أول منصة رقمية في تونس للاستشارة القانونية عن بُعد. نقدم خدمات متخصصة للأفراد والمحامين والشركات لتلبية كافة احتياجاتكم القانونية.
           </p>
 
-          <div className="flex flex-col items-center justify-center gap-4 mt-6 sm:mt-8">
-            {/* Plan switch */}
-            <div className="relative flex self-center p-0.5 bg-zinc-900 rounded-lg border border-zinc-800">
-              <button
-                onClick={() => setActivePlan('individuals')}
-                type="button"
-                className={`${
-                  activePlan === 'individuals'
-                    ? 'relative w-1/2 bg-zinc-700 border-zinc-800 shadow-sm text-white'
-                    : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
-                } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
-              >
-                أفراد
-              </button>
-              <button
-                onClick={() => setActivePlan('lawyers')}
-                type="button"
-                className={`${
-                  activePlan === 'lawyers'
-                    ? 'relative w-1/2 bg-zinc-700 border-zinc-800 shadow-sm text-white'
-                    : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
-                } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
-              >
-                شركات
-              </button>
-            </div>
+<div className="flex flex-col sm:flex-row justify-center">
+  <button
+    onClick={() => setActivePlan('individuals')}
+    type="button"
+    className={`${
+      activePlan === 'individuals'
+        ? 'bg-zinc-700 text-white shadow-sm'
+        : 'border border-transparent text-zinc-400'
+    } rounded-md m-1 py-2 px-6 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50`}
+  >
+    أفراد
+  </button>
+
+  <button
+    onClick={() => setActivePlan('lawyers')}
+    type="button"
+    className={`${
+      activePlan === 'lawyers'
+        ? 'bg-zinc-700 text-white shadow-sm'
+        : 'border border-transparent text-zinc-400'
+    } rounded-md m-1 py-2 px-6 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50`}
+  >
+    شركات
+  </button>
+</div>
+
 
             {/* Generate username */}
             <div className="flex flex-col items-center w-full max-w-sm gap-2 mt-4">
