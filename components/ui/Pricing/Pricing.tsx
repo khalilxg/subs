@@ -14,13 +14,13 @@ export default function Pricing() {
   const API_URL = 'https://loi.morched.tn/api/v1';
   const API_KEY = 'H19FC10-KYP4KA3-G5A8S5E-NJB9S37';
 
-  // Function to generate a random 5-digit number starting with 8
+  // Generate random 5-digit number starting with 8
   const generateRandomUsername = (): string => {
     const randomNumber = Math.floor(Math.random() * 10000) + 80000;
     return String(randomNumber);
   };
 
-  // Function to fetch existing users and generate a unique username
+  // Fetch users and generate unique username
   const fetchAndGenerateUsername = async () => {
     setIsSending(true);
     setGeneratedUsername(null);
@@ -29,8 +29,8 @@ export default function Pricing() {
       const response = await fetch(`${API_URL}/admin/users`, {
         method: 'GET',
         headers: {
-          'accept': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
+          accept: 'application/json',
+          Authorization: `Bearer ${API_KEY}`,
         },
       });
 
@@ -56,7 +56,7 @@ export default function Pricing() {
   return (
     <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
-        <div className="sm:flex sm:flex-col sm:align-center text-center">
+        <div className="sm:flex sm:flex-col sm:items-center text-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-6xl">
             خطط الاستخدام
           </h1>
@@ -64,67 +64,65 @@ export default function Pricing() {
             مرشد هي أول منصة رقمية في تونس للاستشارة القانونية عن بُعد. نقدم خدمات متخصصة للأفراد والمحامين والشركات لتلبية كافة احتياجاتكم القانونية.
           </p>
 
-<div className="flex flex-col sm:flex-row justify-center">
-  <button
-    onClick={() => setActivePlan('individuals')}
-    type="button"
-    className={`${
-      activePlan === 'individuals'
-        ? 'bg-zinc-700 text-white shadow-sm'
-        : 'border border-transparent text-zinc-400'
-    } rounded-md m-1 py-2 px-6 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50`}
-  >
-    أفراد
-  </button>
+          {/* Plan Selection Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center mt-6">
+            <button
+              onClick={() => setActivePlan('individuals')}
+              type="button"
+              className={`${
+                activePlan === 'individuals'
+                  ? 'bg-zinc-700 text-white shadow-sm'
+                  : 'border border-transparent text-zinc-400'
+              } rounded-md m-1 py-2 px-6 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50`}
+            >
+              أفراد
+            </button>
 
-  <button
-    onClick={() => setActivePlan('lawyers')}
-    type="button"
-    className={`${
-      activePlan === 'lawyers'
-        ? 'bg-zinc-700 text-white shadow-sm'
-        : 'border border-transparent text-zinc-400'
-    } rounded-md m-1 py-2 px-6 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50`}
-  >
-    شركات
-  </button>
-</div>
+            <button
+              onClick={() => setActivePlan('lawyers')}
+              type="button"
+              className={`${
+                activePlan === 'lawyers'
+                  ? 'bg-zinc-700 text-white shadow-sm'
+                  : 'border border-transparent text-zinc-400'
+              } rounded-md m-1 py-2 px-6 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50`}
+            >
+              شركات
+            </button>
+          </div>
 
+          {/* Generate Username */}
+          <div className="flex flex-col items-center w-full max-w-sm gap-2 mt-4">
+            <p dir="rtl" className="text-sm text-zinc-400 text-center">
+              اضغط الزر 🔑 للحصول على كود الدخول
+            </p>
 
-            {/* Generate username */}
-            <div className="flex flex-col items-center w-full max-w-sm gap-2 mt-4">
-              <p dir="rtl" className="text-sm text-zinc-400 text-center">
-                اضغط الزر 🔑 للحصول على كود الدخول
-              </p>
+            <Button
+              variant="slim"
+              onClick={fetchAndGenerateUsername}
+              loading={isSending}
+              disabled={isSending}
+              className="w-full"
+            >
+              {isSending ? 'جاري التوليد...' : 'توليد اسم المستخدم'}
+            </Button>
 
-              <Button
-                variant="slim"
-                onClick={fetchAndGenerateUsername}
-                loading={isSending}
-                disabled={isSending}
-                className="w-full"
+            {generatedUsername && (
+              <a
+                href={`sms:25484040?body=${generatedUsername}`}
+                className="mt-4 block p-4 bg-zinc-800 rounded-md text-center hover:bg-zinc-700 transition cursor-pointer"
               >
-                {isSending ? 'جاري التوليد...' : 'توليد اسم المستخدم'}
-              </Button>
-
-              {generatedUsername && (
-                <a
-                  href={`sms:25484040?body= ${generatedUsername}`}
-                  className="mt-4 block p-4 bg-zinc-800 rounded-md text-center hover:bg-zinc-700 transition cursor-pointer"
-                >
-                  <p className="text-sm text-zinc-300">
-                    اسم المستخدم الجديد الخاص بك هو:
-                  </p>
-                  <p className="text-2xl font-bold text-white mt-2">
-                    {generatedUsername}
-                  </p>
-                  <p dir="rtl" className="text-sm text-zinc-400 text-center mt-1">
-                    اضغط هنا لإرسال هذا الكود مباشرة إلى المرشد 📲  25484040 (سعر الرسالة 200 مليم)
-
-                  </p>
-                </a>
-              )}
-            </div>
+                <p className="text-sm text-zinc-300">
+                  اسم المستخدم الجديد الخاص بك هو:
+                </p>
+                <p className="text-2xl font-bold text-white mt-2">
+                  {generatedUsername}
+                </p>
+                <p dir="rtl" className="text-sm text-zinc-400 text-center mt-1">
+                  اضغط هنا لإرسال هذا الكود مباشرة إلى المرشد 📲 25484040 (سعر الرسالة 200 مليم)
+                </p>
+              </a>
+            )}
           </div>
         </div>
 
