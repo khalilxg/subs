@@ -6,6 +6,15 @@ export default function LogoCloud() {
       </p>
       <div className="grid grid-cols-1 place-items-center	my-12 space-y-4 sm:mt-8 sm:space-y-0 md:mx-auto md:max-w-2xl sm:grid sm:gap-6 sm:grid-cols-5">
         <div className="flex items-center justify-start h-12">
+          <a href="https://loi.morched.tn" aria-label="loi.morched.tn Link">
+            <img
+              src="/stripe.svg"
+              alt="loi.morched.tn Logo"
+              className="h-12 text-white"
+            />
+          </a>
+        </div>
+        <div className="flex items-center justify-start h-12">
           <a href="" aria-label="Next.js Link">
             <img
               src="/nextjs.svg"
@@ -15,20 +24,11 @@ export default function LogoCloud() {
           </a>
         </div>
         <div className="flex items-center justify-start h-12">
-          <a href="" aria-label="Vercel.com Link">
+          <a href="" aria-label="web.aibc.tn Link">
             <img
-              src="/vercel.svg"
-              alt="Vercel.com Logo"
+              src="/aibc.svg"
+              alt="web.aibc.tn Logo"
               className="h-6 text-white"
-            />
-          </a>
-        </div>
-        <div className="flex items-center justify-start h-12">
-          <a href="https://loi.morched.tn" aria-label="loi.morched.tn Link">
-            <img
-              src="/stripe.svg"
-              alt="loi.morched.tn Logo"
-              className="h-12 text-white"
             />
           </a>
         </div>
